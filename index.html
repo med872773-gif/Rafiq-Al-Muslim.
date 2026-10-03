@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>أذكار المسلم - رفيقك اليومي للذكر</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script>
+tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{tajawal:['Tajawal'],amiri:['Amiri']},colors:{primary:'#0e7368',primaryDark:'#0a4a44',gold:'#c49a3c',goldLight:'#e8d5a3'}}}}
+</script>
+<style>
+*{font-family:'Tajawal',system-ui,sans-serif}
+.amiri{font-family:'Amiri',serif}
+::-webkit-scrollbar{width:0;height:0}
+*{scrollbar-width:none}
+.glass{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.pattern{
+background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+background-size:22px 22px;
+}
+.islamic-pattern{
+background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.card-shadow{box-shadow:0 4px 24px rgba(14,115,104,0.08), 0 1px 3px rgba(0,0,0,0.05)}
+.card-shadow-dark{box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+.progress-ring{transform:rotate(-90deg)}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes pulse-soft{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+@keyframes confetti{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(-80px) rotate(180deg);opacity:0}}
+.animate-float{animation:float 4s ease-in-out infinite}
+.shimmer{position:relative;overflow:hidden}
+.shimmer:after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);transform:translateX(-100%);animation:shimmer 2s infinite}
+@keyframes shimmer{100%{transform:translateX(100%)}}
+.no-scrollbar::-webkit-scrollbar{display:none}
+</style>
+</head>
+<body class="bg-[#f6f8f7] dark:bg-[#061412] text-zinc-800 dark:text-zinc-100 transition-colors duration-300 min-h-screen">
+<!-- App Container -->
+<div id="app" class="max-w-[430px] mx-auto min-h-screen bg-[#f6f8f7] dark:bg-[#061412] relative flex flex-col shadow-[0_0_80px_rgba(0,0,0,0.08)] lg:my-6 lg:rounded-[32px] lg:overflow-hidden lg:border lg:border-zinc-200 dark:lg:border-zinc-800 lg:min-h-[840px]">
+
+<!-- Header -->
+<header class="sticky top-0 z-30 bg-white/80 dark:bg-[#0d2421]/80 glass border-b border-zinc-100 dark:border-white/5">
+<div class="px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-[#0a4a44] flex items-center justify-center text-white shadow-lg shadow-primary/20">
+<i class="fa-solid fa-mosque text-[18px]"></i>
+</div>
+<div>
+<h1 class="font-bold text-[17px] leading-none text-zinc-800 dark:text-white">أذكار المسلم</h1>
+<p id="hijriDate" class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">الخميس ١٤ جمادى الأولى ١٤٤٦</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button id="searchBtnTop" class="w-9 h-9 rounded-full bg-zinc-100 dark:bg-white/10 flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 transition">
+<i class="fa-solid fa-magnifying-glass text-sm"></i>
+</button>
+<button id="themeToggle" class="w-9 h-9 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 flex items-center justify-center transition">
+<i class="fa-solid fa-moon text-sm dark:hidden"></i>
+<i class="fa-solid fa-sun text-sm hidden dark:block"></i>
+</button>
+</div>
+</div>
+<!-- Search Overlay Bar -->
+<div id="searchBarWrap" class="px-4 pb-3 hidden">
+<div class="relative">
+<input id="searchInput" type="text" placeholder="ابحث عن ذكر أو دعاء..." class="w-full h-[46px] pr-11 pl-11 bg-zinc-100 dark:bg-white/10 border border-zinc-200 dark:border-white/10 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary placeholder:text-zinc-400">
+<i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 text-sm"></i>
+<button id="clearSearch" class="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-zinc-200 dark:bg-white/20 flex items-center justify-center hidden"><i class="fa-solid fa-xmark text-xs"></i></button>
+</div>
+<div id="searchMeta" class="text-[11px] text-zinc-500 mt-2 hidden"></div>
+</div>
+</header>
+
+<main class="flex-1 overflow-y-auto no-scrollbar pb-[86px] relative">
+<!-- HOME VIEW -->
+<section id="view-home" class="pb-6">
+<!-- Hero -->
+<div class="mx-4 mt-4 rounded-[28px] bg-gradient-to-br from-[#0e7368] via-[#0f7a6e] to-[#0a4a44] p-5 text-white relative overflow-hidden islamic-pattern">
+<div class="absolute -left-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+<div class="absolute -right-8 -bottom-8 w-32 h-32 bg-gold/20 rounded-full blur-2xl"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-white/80 text-xs font-medium tracking-widest">﴿ أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ ﴾</p>
+<h2 class="text-[22px] font-bold mt-1 leading-tight">السلام عليكم<br>ورحمة الله وبركاته</h2>
+<p id="currentDateText" class="text-white/70 text-xs mt-1">الخميس • 2 أكتوبر 2026</p>
+</div>
+<div class="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur flex flex-col items-center justify-center border border-white/20">
+<span class="text-[10px] tracking-widest text-white/70">العصر</span>
+<span id="prayerTime" class="text-lg font-bold leading-none mt-0.5">03:42</span>
+<span class="text-[10px] text-white/60">متبقي</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 mt-5">
+<div class="bg-white/10 backdrop-blur rounded-2xl p-3 border border-white/10 text-center">
+<div class="text-lg font-bold" id="statCompleted">0</div>
+<div class="text-[11px] text-white/70">ذكر مكتمل</div>
+</div>
+<div class="bg-white/10 backdrop-blur rounded-2xl p-3 border border-white/10 text-center">
+<div class="text-lg font-bold" id="statFav">0</div>
+<div class="text-[11px] text-white/70">المفضلة</div>
+</div>
+<div class="bg-white rounded-2xl p-3 text-center text-zinc-800">
+<div class="text-lg font-bold text-primary" id="statStreak">7</div>
+<div class="text-[11px] text-zinc-500">أيام متتالية</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Quick Actions -->
+<div class="px-4 mt-4 grid grid-cols-4 gap-3">
+<button onclick="switchView('tasbih')" class="flex flex-col items-center gap-2">
+<div class="w-[64px] h-[64px] rounded-[20px] bg-white dark:bg-[#132e2b] card-shadow flex items-center justify-center text-primary text-xl border border-zinc-100 dark:border-white/5"><i class="fa-solid fa-arrow-rotate-left"></i></div>
+<span class="text-[11px] font-medium">المسبحة</span>
+</button>
+<button onclick="switchView('favorites')" class="flex flex-col items-center gap-2">
+<div class="w-[64px] h-[64px] rounded-[20px] bg-white dark:bg-[#132e2b] card-shadow flex items-center justify-center text-rose-500 text-xl border border-zinc-100 dark:border-white/5"><i class="fa-solid fa-heart"></i></div>
+<span class="text-[11px] font-medium">المفضلة</span>
+</button>
+<button onclick="document.getElementById('searchBarWrap').classList.remove('hidden');document.getElementById('searchInput').focus()" class="flex flex-col items-center gap-2">
+<div class="w-[64px] h-[64px] rounded-[20px] bg-white dark:bg-[#132e2b] card-shadow flex items-center justify-center text-amber-600 text-xl border border-zinc-100 dark:border-white/5"><i class="fa-solid fa-magnifying-glass"></i></div>
+<span class="text-[11px] font-medium">البحث</span>
+</button>
+<button onclick="switchView('settings')" class="flex flex-col items-center gap-2">
+<div class="w-[64px] h-[64px] rounded-[20px] bg-white dark:bg-[#132e2b] card-shadow flex items-center justify-center text-zinc-600 dark:text-zinc-300 text-xl border border-zinc-100 dark:border-white/5"><i class="fa-solid fa-gear"></i></div>
+<span class="text-[11px] font-medium">الإعدادات</span>
+</button>
+</div>
+
+<!-- Categories -->
+<div class="px-4 mt-6">
+<div class="flex items-center justify-between mb-3">
+<h3 class="font-bold text-[15px]">أقسام الأذكار</h3>
+<span class="text-[11px] bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium">8 أقسام</span>
+</div>
+<div id="categoriesGrid" class="grid grid-cols-2 gap-3">
+<!-- injected -->
+</div>
+</div>
+
+<!-- Featured Dua -->
+<div class="mx-4 mt-6 bg-white dark:bg-[#132e2b] rounded-[24px] p-5 card-shadow border border-zinc-100 dark:border-white/5 relative overflow-hidden">
+<div class="absolute left-0 top-0 w-20 h-20 bg-primary/5 rounded-full blur-xl"></div>
+<div class="flex items-center gap-2 text-primary text-xs font-bold mb-2">
+<span class="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center"><i class="fa-solid fa-star text-[10px]"></i></span> دعاء اليوم
+</div>
+<p class="amiri text-[18px] leading-8 text-zinc-800 dark:text-zinc-100">"اللهم إني أسألك علماً نافعاً، ورزقاً طيباً، وعملاً متقبلاً"</p>
+<p class="text-[11px] text-zinc-500 mt-2">— رواه ابن ماجه وصححه الألباني</p>
+<div class="flex gap-2 mt-4">
+<button onclick="saveFeatured()" class="flex-1 h-9 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold">حفظ في المفضلة <i class="fa-regular fa-heart mr-1"></i></button>
+<button onclick="switchView('tasbih')" class="h-9 px-4 rounded-full bg-primary/10 text-primary text-xs font-bold">سبّح</button>
+</div>
+</div>
+
+<div class="px-4 mt-6 flex items-center gap-2 text-[11px] text-zinc-400">
+<i class="fa-solid fa-wifi"></i> يعمل بدون إنترنت • جميع الأذكار محفوظة على جهازك
+</div>
+</section>
+
+<!-- AZKAR VIEW -->
+<section id="view-azkar" class="hidden">
+<div class="sticky top-0 z-20 bg-[#f6f8f7]/90 dark:bg-[#061412]/90 glass px-4 py-3 flex items-center gap-3 border-b border-zinc-200/50 dark:border-white/5">
+<button onclick="switchView('home')" class="w-9 h-9 rounded-full bg-white dark:bg-white/10 flex items-center justify-center shadow-sm border border-zinc-100 dark:border-white/10"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+<div class="flex-1">
+<h2 id="azkarTitle" class="font-bold text-[16px]">أذكار الصباح</h2>
+<p id="azkarSubtitle" class="text-[11px] text-zinc-500">8 أذكار • من طلوع الفجر إلى شروق الشمس</p>
+</div>
+<button id="azkarFavFilter" class="w-9 h-9 rounded-full bg-white dark:bg-white/10 flex items-center justify-center border border-zinc-100 dark:border-white/10 text-zinc-500"><i class="fa-regular fa-heart"></i></button>
+</div>
+<!-- progress -->
+<div class="px-4 py-3">
+<div class="flex items-center justify-between text-[11px] mb-1.5">
+<span class="text-zinc-500">التقدم</span>
+<span class="font-bold text-primary"><span id="progressDone">0</span> / <span id="progressTotal">0</span></span>
+</div>
+<div class="h-2 bg-zinc-200 dark:bg-white/10 rounded-full overflow-hidden">
+<div id="progressBar" class="h-full bg-gradient-to-l from-primary to-emerald-400 rounded-full transition-all duration-500" style="width:0%"></div>
+</div>
+</div>
+<div id="azkarList" class="px-4 space-y-3 pb-6">
+<!-- cards -->
+</div>
+</section>
+
+<!-- TASBIH VIEW -->
+<section id="view-tasbih" class="hidden px-4 pt-2 pb-6">
+<div class="flex items-center gap-3 py-2">
+<button onclick="switchView('home')" class="w-9 h-9 rounded-full bg-white dark:bg-white/10 flex items-center justify-center border border-zinc-100 dark:border-white/10"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+<h2 class="font-bold">المسبحة الإلكترونية</h2>
+<span class="mr-auto text-[11px] bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full">يحفظ تلقائياً</span>
+</div>
+
+<div class="mt-4 bg-gradient-to-br from-[#0e7368] to-[#0a4a44] rounded-[32px] p-6 text-white relative overflow-hidden islamic-pattern">
+<div class="absolute -left-10 top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+<p class="text-center text-white/70 text-xs tracking-widest">اختر الذكر</p>
+<div id="phraseChips" class="flex gap-2 mt-3 overflow-x-auto no-scrollbar pb-1">
+<!-- chips -->
+</div>
+<div class="mt-6 flex flex-col items-center">
+<div class="relative">
+<div class="w-[210px] h-[210px] rounded-full bg-white/10 backdrop-blur border border-white/20 flex flex-col items-center justify-center relative">
+<div class="absolute inset-3 rounded-full border border-white/10"></div>
+<span id="tasbihPhraseDisplay" class="amiri text-[20px] font-bold">سبحان الله</span>
+<span id="tasbihCountDisplay" class="text-[56px] font-black leading-none mt-1">0</span>
+<span class="text-white/60 text-xs mt-1">من <span id="tasbihTargetDisplay">33</span></span>
+</div>
+<div id="tasbihProgressRing" class="absolute inset-0 pointer-events-none">
+<svg class="w-[210px] h-[210px] progress-ring"><circle cx="105" cy="105" r="102" stroke="rgba(255,255,255,0.15)" stroke-width="4" fill="none"/><circle id="tasbihRing" cx="105" cy="105" r="102" stroke="#f9e2a7" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="641" stroke-dashoffset="641" class="transition-all duration-300"/></svg>
+</div>
+</div>
+<div class="flex items-center gap-3 mt-6 w-full">
+<button id="tasbihReset" class="h-[56px] px-6 rounded-full bg-white/15 backdrop-blur border border-white/20 text-white font-bold text-sm">تصفير</button>
+<button id="tasbihButton" class="flex-1 h-[64px] rounded-full bg-white text-[#0a4a44] font-black text-[18px] shadow-xl active:scale-[0.98] transition flex items-center justify-center gap-2">
+<span>تسبيح</span> <span class="w-7 h-7 rounded-full bg-[#0a4a44] text-white flex items-center justify-center text-sm"><i class="fa-solid fa-plus"></i></span>
+</button>
+</div>
+<div class="flex justify-center gap-2 mt-4">
+<button data-target="33" class="tasbihTargetBtn h-9 px-5 rounded-full bg-white text-[#0a4a44] font-bold text-sm">33</button>
+<button data-target="100" class="tasbihTargetBtn h-9 px-5 rounded-full bg-white/15 text-white border border-white/20 font-bold text-sm">100</button>
+<button data-target="1000" class="tasbihTargetBtn h-9 px-5 rounded-full bg-white/15 text-white border border-white/20 font-bold text-sm">1000</button>
+<div class="flex items-center gap-1 bg-white/15 rounded-full px-2 border border-white/20">
+<input id="customTarget" type="number" placeholder="مخصص" class="w-14 bg-transparent text-center text-sm placeholder:text-white/60 focus:outline-none">
+<button id="setCustomTarget" class="w-7 h-7 rounded-full bg-white text-[#0a4a44] flex items-center justify-center"><i class="fa-solid fa-check text-xs"></i></button>
+</div>
+</div>
+<p class="text-center text-white/50 text-[11px] mt-3">اهتزاز عند كل 33 • صوت خفيف عند الإكمال</p>
+</div>
+</div>
+
+<div class="grid grid-cols-3 gap-3 mt-4">
+<div class="bg-white dark:bg-[#132e2b] rounded-2xl p-4 text-center card-shadow border border-zinc-100 dark:border-white/5">
+<div class="text-xl font-black text-primary" id="tasbihTotalToday">0</div>
+<div class="text-[11px] text-zinc-500">اليوم</div>
+</div>
+<div class="bg-white dark:bg-[#132e2b] rounded-2xl p-4 text-center card-shadow border border-zinc-100 dark:border-white/5">
+<div class="text-xl font-black" id="tasbihTotalAll">0</div>
+<div class="text-[11px] text-zinc-500">الإجمالي</div>
+</div>
+<div class="bg-white dark:bg-[#132e2b] rounded-2xl p-4 text-center card-shadow border border-zinc-100 dark:border-white/5">
+<div class="text-xl font-black text-amber-600" id="tasbihKhatma">0</div>
+<div class="text-[11px] text-zinc-500">ختمة</div>
+</div>
+</div>
+
+<div class="mt-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 flex gap-3">
+<div class="w-9 h-9 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-lightbulb text-sm"></i></div>
+<div>
+<p class="text-sm font-bold text-amber-900 dark:text-amber-200">فضل التسبيح</p>
+<p class="text-xs leading-5 text-amber-800/80 dark:text-amber-200/70 mt-1">قال ﷺ: «من قال سبحان الله وبحمده في يوم مائة مرة حُطَّت خطاياه وإن كانت مثل زبد البحر» رواه البخاري</p>
+</div>
+</div>
+</section>
+
+<!-- FAVORITES VIEW -->
+<section id="view-favorites" class="hidden px-4 pt-2">
+<div class="flex items-center gap-3 py-2">
+<button onclick="switchView('home')" class="w-9 h-9 rounded-full bg-white dark:bg-white/10 flex items-center justify-center border border-zinc-100 dark:border-white/10"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+<h2 class="font-bold">المفضلة</h2>
+<span id="favCountBadge" class="mr-auto bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-300 text-xs px-3 py-1 rounded-full font-bold">0 ذكر</span>
+</div>
+<div id="favoritesList" class="space-y-3 mt-4">
+</div>
+<div id="favEmpty" class="text-center py-16 hidden">
+<div class="w-20 h-20 mx-auto rounded-full bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-400 text-2xl"><i class="fa-regular fa-heart"></i></div>
+<p class="font-bold mt-4">لا يوجد أذكار مفضلة بعد</p>
+<p class="text-sm text-zinc-500 mt-1">اضغط على قلب أي ذكر لحفظه هنا</p>
+<button onclick="switchView('home')" class="mt-6 h-10 px-6 rounded-full bg-primary text-white font-bold text-sm">استعرض الأذكار</button>
+</div>
+</section>
+
+<!-- SETTINGS VIEW -->
+<section id="view-settings" class="hidden px-4 pt-2 pb-6">
+<div class="flex items-center gap-3 py-2">
+<button onclick="switchView('home')" class="w-9 h-9 rounded-full bg-white dark:bg-white/10 flex items-center justify-center border border-zinc-100 dark:border-white/10"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+<h2 class="font-bold">الإعدادات</h2>
+</div>
+
+<div class="space-y-4 mt-4">
+<!-- Appearance -->
+<div class="bg-white dark:bg-[#132e2b] rounded-[20px] p-4 card-shadow border border-zinc-100 dark:border-white/5">
+<h3 class="font-bold text-sm flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-600 flex items-center justify-center text-xs"><i class="fa-solid fa-palette"></i></span> المظهر</h3>
+<div class="flex items-center justify-between mt-4">
+<div>
+<p class="font-medium text-sm">الوضع الليلي</p>
+<p class="text-xs text-zinc-500">مريح للعين ليلاً</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input id="darkModeToggle" type="checkbox" class="sr-only peer">
+<div class="w-12 h-7 bg-zinc-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-[20px] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="mt-4">
+<div class="flex justify-between text-xs mb-2"><span>حجم الخط</span><span id="fontSizeVal" class="font-bold text-primary">16px</span></div>
+<input id="fontSizeRange" type="range" min="14" max="22" value="16" class="w-full accent-primary">
+<div class="flex justify-between text-[10px] text-zinc-400"><span>صغير</span><span>كبير</span></div>
+</div>
+</div>
+
+<!-- Notifications -->
+<div class="bg-white dark:bg-[#132e2b] rounded-[20px] p-4 card-shadow border border-zinc-100 dark:border-white/5">
+<h3 class="font-bold text-sm flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center text-xs"><i class="fa-solid fa-bell"></i></span> الإشعارات والتذكير</h3>
+<div class="space-y-4 mt-4">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-medium text-sm">تذكير أذكار الصباح</p>
+<p class="text-xs text-zinc-500">كل يوم بعد الفجر</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer"><input id="notifMorning" type="checkbox" checked class="sr-only peer"><div class="w-11 h-6 bg-zinc-200 rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-[20px]"></div></label>
+</div>
+<div class="flex items-center gap-2 bg-zinc-50 dark:bg-white/5 rounded-xl p-2">
+<i class="fa-regular fa-clock text-zinc-400 text-sm"></i>
+<input id="morningTime" type="time" value="06:30" class="bg-transparent text-sm focus:outline-none">
+<span class="text-xs text-zinc-500 mr-auto">توقيت التذكير</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-medium text-sm">تذكير أذكار المساء</p>
+<p class="text-xs text-zinc-500">قبل المغرب</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer"><input id="notifEvening" type="checkbox" checked class="sr-only peer"><div class="w-11 h-6 bg-zinc-200 rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-[20px]"></div></label>
+</div>
+<div class="flex items-center gap-2 bg-zinc-50 dark:bg-white/5 rounded-xl p-2">
+<i class="fa-regular fa-clock text-zinc-400 text-sm"></i>
+<input id="eveningTime" type="time" value="17:30" class="bg-transparent text-sm focus:outline-none">
+<span class="text-xs text-zinc-500 mr-auto">توقيت التذكير</span>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-medium text-sm">تذكير يومي عام</p>
+<p class="text-xs text-zinc-500">ذكر عشوائي</p>
+</div>
+<label class="relative inline-flex items-center cursor-pointer"><input id="notifDaily" type="checkbox" class="sr-only peer"><div class="w-11 h-6 bg-zinc-200 rounded-full peer peer-checked:bg-primary after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-[20px]"></div></label>
+</div>
+<button id="testNotif" class="w-full h-10 rounded-full bg-primary/10 text-primary font-bold text-sm mt-2">إرسال إشعار تجريبي <i class="fa-solid fa-paper-plane text-xs mr-1"></i></button>
+</div>
+</div>
+
+<!-- Language & Reset -->
+<div class="bg-white dark:bg-[#132e2b] rounded-[20px] p-4 card-shadow border border-zinc-100 dark:border-white/5">
+<h3 class="font-bold text-sm flex items-center gap-2"><span class="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center text-xs"><i class="fa-solid fa-gear"></i></span> عام</h3>
+<div class="flex items-center justify-between mt-4">
+<span class="text-sm">اللغة</span>
+<span class="text-sm font-bold bg-zinc-100 dark:bg-white/10 px-3 py-1 rounded-full">العربية <i class="fa-solid fa-chevron-down text-[10px] mr-1"></i></span>
+</div>
+<button id="resetBtn" class="w-full mt-4 h-11 rounded-full bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-300 font-bold text-sm border border-rose-200 dark:border-rose-800">إعادة ضبط الإعدادات والبيانات</button>
+</div>
+
+<!-- APK Instructions -->
+<div class="bg-gradient-to-br from-zinc-900 to-zinc-800 dark:from-[#1a2e2b] dark:to-[#0d2421] rounded-[20px] p-5 text-white relative overflow-hidden">
+<div class="absolute -left-6 -top-6 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+<h3 class="font-bold flex items-center gap-2"><i class="fa-brands fa-android text-green-400"></i> بناء نسخة APK للأندرويد</h3>
+<ol class="text-xs leading-6 mt-3 space-y-1 list-decimal pr-4 text-white/80">
+<li>حمّل المشروع كملف <b class="text-white">index.html</b> واحد</li>
+<li>ثبّت Node.js ثم نفّذ: <code class="bg-white/10 px-1 py-0.5 rounded">npm i -g @capacitor/cli</code></li>
+<li>أنشئ مجلداً وضع الملف داخله كمجلد <code class="bg-white/10 px-1 py-0.5 rounded">www</code></li>
+<li>شغّل: <code class="bg-white/10 px-1 py-0.5 rounded">npx cap init Azkar com.azkar.muslim --web-dir=www</code></li>
+<li>أضف أندرويد: <code class="bg-white/10 px-1 py-0.5 rounded">npx cap add android</code> ثم <code class="bg-white/10 px-1 py-0.5 rounded">npx cap open android</code></li>
+<li>افتح المشروع في Android Studio واضغط Run لبناء APK</li>
+<li>بديل سريع: ارفع الملف على <b class="text-white">PWABuilder.com</b> وحمّل APK جاهز</li>
+</ol>
+<p class="text-[11px] text-white/50 mt-3">التطبيق يعمل Offline بالكامل • البيانات محفوظة بـ LocalStorage</p>
+</div>
+
+<div class="text-center text-[11px] text-zinc-400 py-2">أذكار المسلم v2.0 • صنع بحب للمسلمين حول العالم</div>
+</div>
+</section>
+
+<!-- SEARCH RESULTS (inside home search) -->
+<section id="view-search" class="hidden px-4 pt-2">
+<div class="flex items-center gap-3 py-2">
+<button onclick="hideSearch()" class="w-9 h-9 rounded-full bg-white dark:bg-white/10 flex items-center justify-center border border-zinc-100 dark:border-white/10"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+<h2 class="font-bold">نتائج البحث</h2>
+</div>
+<div id="searchResults" class="space-y-3 mt-4"></div>
+</section>
+</main>
+
+<!-- Bottom Nav -->
+<nav class="absolute bottom-0 inset-x-0 bg-white/95 dark:bg-[#0d2421]/95 glass border-t border-zinc-200 dark:border-white/5 px-2 py-2">
+<div class="flex justify-around items-center">
+<button data-nav="home" class="navBtn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20">
+<i class="fa-solid fa-house text-[16px]"></i>
+<span class="text-[10px] font-bold">الرئيسية</span>
+</button>
+<button data-nav="tasbih" class="navBtn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-zinc-400">
+<i class="fa-solid fa-bezier-curve text-[16px]"></i>
+<span class="text-[10px] font-medium">المسبحة</span>
+</button>
+<button data-nav="favorites" class="navBtn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-zinc-400 relative">
+<i class="fa-solid fa-heart text-[16px]"></i>
+<span class="text-[10px] font-medium">المفضلة</span>
+<span id="favDot" class="absolute -top-0.5 right-2 w-2 h-2 bg-rose-500 rounded-full hidden"></span>
+</button>
+<button data-nav="settings" class="navBtn flex flex-col items-center gap-1 py-1 px-3 rounded-2xl text-zinc-400">
+<i class="fa-solid fa-gear text-[16px]"></i>
+<span class="text-[10px] font-medium">الإعدادات</span>
+</button>
+</div>
+</nav>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-[90px] left-1/2 -translate-x-1/2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-4 py-2.5 rounded-full text-xs font-bold shadow-xl hidden items-center gap-2 z-50">
+<i class="fa-solid fa-check"></i> <span id="toastMsg">تم الحفظ</span>
+</div>
+</div>
+
+<script>
+const azkarDB = {
+sabah: {
+title:"أذكار الصباح", subtitle:"من طلوع الفجر إلى شروق الشمس", icon:"fa-sun", color:"from-amber-400 to-orange-500", count:8,
+items:[
+{id:"sabah-1", text:"أصبحنا وأصبح الملك لله، والحمد لله، لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير، رب أسألك خير ما في هذا اليوم وخير ما بعده، وأعوذ بك من شر ما في هذا اليوم وشر ما بعده، رب أعوذ بك من الكسل وسوء الكبر، رب أعوذ بك من عذاب في النار وعذاب في القبر.", source:"رواه مسلم", repeat:1},
+{id:"sabah-2", text:"اللهم بك أصبحنا وبك أمسينا وبك نحيا وبك نموت وإليك النشور.", source:"رواه الترمذي", repeat:1},
+{id:"sabah-3", text:"اللهم أنت ربي لا إله إلا أنت خلقتني وأنا عبدك وأنا على عهدك ووعدك ما استطعت، أعوذ بك من شر ما صنعت، أبوء لك بنعمتك علي وأبوء بذنبي فاغفر لي فإنه لا يغفر الذنوب إلا أنت.", source:"سيد الاستغفار - رواه البخاري", repeat:1},
+{id:"sabah-4", text:"سبحان الله وبحمده", source:"رواه مسلم - 100 مرة حطت خطاياه", repeat:100},
+{id:"sabah-5", text:"لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير.", source:"رواه البخاري - 100 مرة", repeat:100},
+{id:"sabah-6", text:"اللهم عافني في بدني، اللهم عافني في سمعي، اللهم عافني في بصري، لا إله إلا أنت. اللهم إني أعوذ بك من الكفر والفقر وأعوذ بك من عذاب القبر لا إله إلا أنت.", source:"رواه أبو داود", repeat:3},
+{id:"sabah-7", text:"حسبي الله لا إله إلا هو عليه توكلت وهو رب العرش العظيم.", source:"رواه أبو داود - 7 مرات تكفيك", repeat:7},
+{id:"sabah-8", text:"بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم.", source:"رواه الترمذي - 3 مرات لم يضره شيء", repeat:3}
+]
+},
+masaa: {
+title:"أذكار المساء", subtitle:"من العصر إلى غروب الشمس", icon:"fa-moon", color:"from-indigo-500 to-violet-600", count:7,
+items:[
+{id:"masaa-1", text:"أمسينا وأمسى الملك لله والحمد لله لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير، رب أسألك خير ما في هذه الليلة وخير ما بعدها وأعوذ بك من شر ما في هذه الليلة وشر ما بعدها.", source:"رواه مسلم", repeat:1},
+{id:"masaa-2", text:"اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير.", source:"رواه الترمذي", repeat:1},
+{id:"masaa-3", text:"أعوذ بكلمات الله التامات من شر ما خلق.", source:"رواه مسلم - 3 مرات", repeat:3},
+{id:"masaa-4", text:"اللهم إني أسألك العفو والعافية في الدنيا والآخرة، اللهم إني أسألك العفو والعافية في ديني ودنياي وأهلي ومالي.", source:"رواه أبو داود", repeat:1},
+{id:"masaa-5", text:"يا حي يا قيوم برحمتك أستغيث أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين.", source:"رواه الحاكم وصححه", repeat:1},
+{id:"masaa-6", text:"سبحان الله وبحمده عدد خلقه ورضا نفسه وزنة عرشه ومداد كلماته.", source:"رواه مسلم - 3 مرات", repeat:3},
+{id:"masaa-7", text:"اللهم فاطر السماوات والأرض عالم الغيب والشهادة رب كل شيء ومليكه أشهد أن لا إله إلا أنت أعوذ بك من شر نفسي وشر الشيطان وشركه.", source:"رواه الترمذي", repeat:1}
+]
+},
+salah: {
+title:"أذكار بعد الصلاة", subtitle:"تقال بعد كل صلاة مفروضة", icon:"fa-mosque", color:"from-emerald-500 to-teal-600", count:6,
+items:[
+{id:"salah-1", text:"أستغفر الله، أستغفر الله، أستغفر الله، اللهم أنت السلام ومنك السلام تباركت يا ذا الجلال والإكرام.", source:"رواه مسلم", repeat:1},
+{id:"salah-2", text:"لا إله إلا الله وحده لا شريك له، له الملك وله الحمد وهو على كل شيء قدير، اللهم لا مانع لما أعطيت ولا معطي لما منعت ولا ينفع ذا الجد منك الجد.", source:"متفق عليه", repeat:1},
+{id:"salah-3", text:"سبحان الله (33 مرة)، الحمد لله (33 مرة)، الله أكبر (33 مرة)، ثم تمام المائة: لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير.", source:"رواه مسلم - تغفر الخطايا", repeat:1, virtualCount:33},
+{id:"salah-4", text:"آية الكرسي: ﴿اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ...﴾", source:"رواه النسائي - من قرأها دبر كل صلاة لم يمنعه من الجنة إلا الموت", repeat:1},
+{id:"salah-5", text:"قل هو الله أحد، وقل أعوذ برب الفلق، وقل أعوذ برب الناس.", source:"رواه أبو داود - 3 مرات بعد الفجر والمغرب ومرة بعد الظهر والعصر والعشاء", repeat:1},
+{id:"salah-6", text:"اللهم أعني على ذكرك وشكرك وحسن عبادتك.", source:"رواه أبو داود", repeat:1}
+]
+},
+sleep: {
+title:"أذكار النوم", subtitle:"قبل النوم وعند الاضطجاع", icon:"fa-bed", color:"from-slate-600 to-slate-800", count:6,
+items:[
+{id:"sleep-1", text:"باسمك ربي وضعت جنبي وبك أرفعه، إن أمسكت نفسي فارحمها، وإن أرسلتها فاحفظها بما تحفظ به عبادك الصالحين.", source:"متفق عليه", repeat:1},
+{id:"sleep-2", text:"اللهم قني عذابك يوم تبعث عبادك.", source:"رواه الترمذي - 3 مرات", repeat:3},
+{id:"sleep-3", text:"باسمك اللهم أموت وأحيا.", source:"رواه البخاري", repeat:1},
+{id:"sleep-4", text:"سبحان الله (33)، الحمد لله (33)، الله أكبر (34) - خير من خادم", source:"متفق عليه", repeat:1},
+{id:"sleep-5", text:"آمن الرسول بما أنزل إليه من ربه والمؤمنون... إلى آخر سورة البقرة", source:"متفق عليه - كفتاه", repeat:1},
+{id:"sleep-6", text:"اللهم أسلمت نفسي إليك وفوضت أمري إليك ووجهت وجهي إليك وألجأت ظهري إليك رغبة ورهبة إليك لا ملجأ ولا منجا منك إلا إليك.", source:"متفق عليه", repeat:1}
+]
+},
+waking: {
+title:"أذكار الاستيقاظ", subtitle:"عند الاستيقاظ من النوم", icon:"fa-cloud-sun", color:"from-sky-400 to-blue-600", count:4,
+items:[
+{id:"waking-1", text:"الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور.", source:"رواه البخاري", repeat:1},
+{id:"waking-2", text:"لا إله إلا الله وحده لا شريك له له الملك وله الحمد وهو على كل شيء قدير، سبحان الله والحمد لله ولا إله إلا الله والله أكبر ولا حول ولا قوة إلا بالله.", source:"رواه البخاري - ثم دعا استجيب له", repeat:1},
+{id:"waking-3", text:"الحمد لله الذي عافاني في جسدي ورد علي روحي وأذن لي بذكره.", source:"رواه الترمذي", repeat:1},
+{id:"waking-4", text:"﴿إن في خلق السماوات والأرض واختلاف الليل والنهار لآيات لأولي الألباب﴾", source:"قراءة خواتيم آل عمران - رواه البخاري", repeat:1}
+]
+},
+home: {
+title:"أذكار المنزل", subtitle:"دخول وخروج المنزل", icon:"fa-house-chimney", color:"from-amber-500 to-orange-600", count:4,
+items:[
+{id:"home-1", text:"بسم الله ولجنا وبسم الله خرجنا وعلى الله ربنا توكلنا.", source:"رواه أبو داود - عند دخول المنزل", repeat:1},
+{id:"home-2", text:"بسم الله توكلت على الله ولا حول ولا قوة إلا بالله.", source:"رواه أبو داود - عند الخروج يقال كفيت ووقيت", repeat:1},
+{id:"home-3", text:"اللهم إني أسألك خير المولج وخير المخرج.", source:"رواه أبو داود", repeat:1},
+{id:"home-4", text:"السلام عليكم ورحمة الله وبركاته - حتى على أهل البيت", source:"رواه الترمذي", repeat:1}
+]
+},
+mosque: {
+title:"أذكار المسجد", subtitle:"دخول وخروج المسجد", icon:"fa-place-of-worship", color:"from-teal-600 to-emerald-700", count:4,
+items:[
+{id:"mosque-1", text:"اللهم افتح لي أبواب رحمتك. - عند دخول المسجد", source:"رواه مسلم", repeat:1},
+{id:"mosque-2", text:"اللهم إني أسألك من فضلك. - عند الخروج من المسجد", source:"رواه مسلم", repeat:1},
+{id:"mosque-3", text:"أعوذ بالله العظيم وبوجهه الكريم وسلطانه القديم من الشيطان الرجيم.", source:"رواه أبو داود", repeat:1},
+{id:"mosque-4", text:"بسم الله والصلاة والسلام على رسول الله.", source:"رواه أبو داود", repeat:1}
+]
+},
+quran: {
+title:"أدعية من القرآن والسنة", subtitle:"جوامع الدعاء", icon:"fa-book-quran", color:"from-violet-500 to-purple-600", count:7,
+items:[
+{id:"quran-1", text:"﴿رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ﴾", source:"سورة البقرة 201", repeat:1},
+{id:"quran-2", text:"﴿رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً﴾", source:"سورة آل عمران 8", repeat:1},
+{id:"quran-3", text:"اللهم إني أسألك الهدى والتقى والعفاف والغنى.", source:"رواه مسلم", repeat:1},
+{id:"quran-4", text:"اللهم اغفر لي وارحمني واهدني وعافني وارزقني.", source:"رواه مسلم - جوامع الدعاء", repeat:1},
+{id:"quran-5", text:"يا مقلب القلوب ثبت قلبي على دينك.", source:"رواه الترمذي", repeat:1},
+{id:"quran-6", text:"اللهم إنك عفو تحب العفو فاعف عني.", source:"رواه الترمذي", repeat:1},
+{id:"quran-7", text:"اللهم إني أعوذ بك من الهم والحزن والعجز والكسل والبخل والجبن وضلع الدين وغلبة الرجال.", source:"رواه البخاري", repeat:1}
+]
+}
+};
+
+const categoryMeta = [
+{key:'sabah', label:'أذكار الصباح', desc:'8 أذكار'},
+{key:'masaa', label:'أذكار المساء', desc:'7 أذكار'},
+{key:'salah', label:'بعد الصلاة', desc:'6 أذكار'},
+{key:'sleep', label:'أذكار النوم', desc:'6 أذكار'},
+{key:'waking', label:'الاستيقاظ', desc:'4 أذكار'},
+{key:'home', label:'المنزل', desc:'4 أذكار'},
+{key:'mosque', label:'المسجد', desc:'4 أذكار'},
+{key:'quran', label:'أدعية قرآنية', desc:'7 أذكار'},
+];
+
+const phrases = ["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله","سبحان الله وبحمده","لا حول ولا قوة إلا بالله"];
+
+let state = {
+currentView:'home',
+currentCategory:null,
+favorites: JSON.parse(localStorage.getItem('azkar_fav')||'[]'),
+progress: JSON.parse(localStorage.getItem('azkar_progress')||'{}'),
+tasbihCount: parseInt(localStorage.getItem('tasbih_count')||'0'),
+tasbihTarget: parseInt(localStorage.getItem('tasbih_target')||'33'),
+tasbihPhrase: localStorage.getItem('tasbih_phrase')||'سبحان الله',
+tasbihTotal: parseInt(localStorage.getItem('tasbih_total')||'0'),
+fontSize: parseInt(localStorage.getItem('fontSize')||'16'),
+dark: localStorage.getItem('darkMode')==='true'
+};
+
+function saveState(){
+localStorage.setItem('azkar_fav', JSON.stringify(state.favorites));
+localStorage.setItem('azkar_progress', JSON.stringify(state.progress));
+localStorage.setItem('tasbih_count', state.tasbihCount);
+localStorage.setItem('tasbih_target', state.tasbihTarget);
+localStorage.setItem('tasbih_phrase', state.tasbihPhrase);
+localStorage.setItem('tasbih_total', state.tasbihTotal);
+localStorage.setItem('fontSize', state.fontSize);
+localStorage.setItem('darkMode', state.dark);
+}
+
+function applyTheme(){
+if(state.dark) document.documentElement.classList.add('dark');
+else document.documentElement.classList.remove('dark');
+document.body.style.fontSize = state.fontSize+'px';
+document.getElementById('fontSizeVal').textContent = state.fontSize+'px';
+document.getElementById('fontSizeRange').value = state.fontSize;
+document.getElementById('darkModeToggle').checked = state.dark;
+}
+function showToast(msg){
+const t=document.getElementById('toast');
+document.getElementById('toastMsg').textContent=msg;
+t.classList.remove('hidden');t.classList.add('flex');
+setTimeout(()=>{t.classList.add('hidden');t.classList.remove('flex')},2000);
+}
+
+function switchView(view, param){
+state.currentView=view;
+document.querySelectorAll('main > section').forEach(s=>s.classList.add('hidden'));
+document.getElementById('view-'+view).classList.remove('hidden');
+document.querySelectorAll('.navBtn').forEach(b=>{
+b.classList.remove('bg-primary','text-white','shadow-lg');
+b.classList.add('text-zinc-400');
+if(b.dataset.nav===view){b.classList.add('bg-primary','text-white','shadow-lg');b.classList.remove('text-zinc-400')}
+});
+if(view==='home'){renderHome(); window.scrollTo(0,0)}
+if(view==='azkar' && param){state.currentCategory=param; renderAzkar(param)}
+if(view==='tasbih'){renderTasbih()}
+if(view==='favorites'){renderFavorites()}
+if(view==='settings'){applyTheme()}
+document.querySelector('main').scrollTop=0;
+}
+
+function renderHome(){
+const grid=document.getElementById('categoriesGrid');
+grid.innerHTML='';
+categoryMeta.forEach(cat=>{
+const data=azkarDB[cat.key];
+const done = data.items.filter(i=> (state.progress[i.id]||0) >= i.repeat ).length;
+const isDone = done===data.items.length && data.items.length>0;
+grid.innerHTML+=`
+<div onclick="switchView('azkar','${cat.key}')" class="group bg-white dark:bg-[#132e2b] rounded-[22px] p-4 card-shadow border border-zinc-100 dark:border-white/5 cursor-pointer hover:scale-[1.02] transition relative overflow-hidden">
+<div class="absolute left-0 top-0 w-20 h-20 opacity-5 bg-gradient-to-br ${data.color} rounded-full blur-xl"></div>
+<div class="w-11 h-11 rounded-2xl bg-gradient-to-br ${data.color} flex items-center justify-center text-white shadow-md">
+<i class="fa-solid ${data.icon} text-[18px]"></i>
+</div>
+<h4 class="font-bold text-[14px] mt-3">${data.title}</h4>
+<p class="text-[11px] text-zinc-500 dark:text-zinc-400">${data.subtitle}</p>
+<div class="flex items-center justify-between mt-3">
+<span class="text-[11px] bg-zinc-100 dark:bg-white/10 px-2.5 py-1 rounded-full">${data.items.length} أذكار</span>
+${isDone?'<span class="text-emerald-600 text-xs"><i class="fa-solid fa-circle-check"></i> مكتمل</span>':`<span class="text-[11px] text-primary font-bold">${done}/${data.items.length}</span>`}
+</div>
+</div>`;
+});
+document.getElementById('statFav').textContent=state.favorites.length;
+const completedTotal = Object.values(azkarDB).reduce((acc,cat)=> acc + cat.items.filter(i=> (state.progress[i.id]||0)>=i.repeat).length,0);
+document.getElementById('statCompleted').textContent=completedTotal;
+document.getElementById('favDot').classList.toggle('hidden', state.favorites.length===0);
+// hijri date
+try{
+const now=new Date();
+const hijri=new Intl.DateTimeFormat('ar-SA-u-ca-islamic',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+document.getElementById('hijriDate').textContent=hijri;
+document.getElementById('currentDateText').textContent=new Intl.DateTimeFormat('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(now);
+}catch(e){}
+}
+
+function getAllAzkar(){
+let all=[];
+Object.values(azkarDB).forEach(cat=> cat.items.forEach(i=> all.push({...i, category:cat.title, key:cat})));
+return all;
+}
+
+function renderAzkar(catKey){
+const cat=azkarDB[catKey];
+document.getElementById('azkarTitle').textContent=cat.title;
+document.getElementById('azkarSubtitle').textContent=cat.subtitle + ` • ${cat.items.length} أذكار`;
+const list=document.getElementById('azkarList');
+list.innerHTML='';
+let doneCount=0;
+cat.items.forEach((item, idx)=>{
+const prog = state.progress[item.id]||0;
+const remaining = Math.max(0, item.repeat - prog);
+const isDone = remaining===0;
+if(isDone) doneCount++;
+const fav = state.favorites.includes(item.id);
+list.innerHTML+=`
+<div id="card-${item.id}" class="bg-white dark:bg-[#132e2b] rounded-[22px] p-4 card-shadow border ${isDone?'border-emerald-200 dark:border-emerald-800 bg-emerald-50/50 dark:bg-emerald-900/10':'border-zinc-100 dark:border-white/5'} relative overflow-hidden transition">
+${isDone?'<div class="absolute left-3 top-3 w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-check"></i></div>':''}
+<div class="flex items-center gap-2 mb-3">
+<span class="w-7 h-7 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 flex items-center justify-center text-xs font-bold">${idx+1}</span>
+<span class="text-[11px] bg-primary/10 text-primary px-2.5 py-1 rounded-full font-bold">التكرار ${item.repeat} <span class="opacity-60">• متبقي ${remaining}</span></span>
+<button onclick="toggleFav('${item.id}')" class="mr-auto w-8 h-8 rounded-full ${fav?'bg-rose-500 text-white':'bg-zinc-100 dark:bg-white/10 text-zinc-400'} flex items-center justify-center transition">
+<i class="${fav?'fa-solid':'fa-regular'} fa-heart text-sm"></i>
+</button>
+</div>
+<p class="amiri text-[18px] leading-[1.9] text-zinc-800 dark:text-zinc-100">${item.text}</p>
+<p class="text-[11px] text-emerald-700 dark:text-emerald-300 mt-3 bg-emerald-50 dark:bg-emerald-900/20 inline-block px-2.5 py-1 rounded-full">${item.source}</p>
+<div class="flex items-center gap-3 mt-4">
+<div class="flex-1 h-2 bg-zinc-100 dark:bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-l from-primary to-emerald-400 rounded-full transition-all" style="width:${(prog/item.repeat)*100}%"></div>
+</div>
+<span class="text-xs font-bold ${isDone?'text-emerald-600':'text-zinc-500'}">${prog}/${item.repeat}</span>
+</div>
+<button onclick="doTasbih('${item.id}')" ${isDone?'disabled':''} class="w-full mt-3 h-[46px] rounded-full ${isDone?'bg-emerald-500 text-white':'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:bg-zinc-800'} font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.99] transition disabled:opacity-60">
+${isDone?'<i class="fa-solid fa-check"></i> تم بحمد الله':'<i class="fa-solid fa-arrow-rotate-left"></i> تسبيح'} <span class="bg-white/20 px-2 py-0.5 rounded-full text-xs">${remaining>0?remaining:0} متبقي</span>
+</button>
+</div>`;
+});
+document.getElementById('progressDone').textContent=doneCount;
+document.getElementById('progressTotal').textContent=cat.items.length;
+document.getElementById('progressBar').style.width=(doneCount/cat.items.length*100)+'%';
+}
+
+function doTasbih(id){
+const item = getAllAzkar().find(x=>x.id===id);
+if(!item) return;
+let prog = state.progress[id]||0;
+if(prog >= item.repeat) return;
+prog++;
+state.progress[id]=prog;
+saveState();
+if(navigator.vibrate) navigator.vibrate(30);
+renderAzkar(state.currentCategory);
+// auto scroll to next
+if(prog===item.repeat){
+showToast('أحسنت! انتقل للذكر التالي');
+const cat=azkarDB[state.currentCategory];
+const idx=cat.items.findIndex(x=>x.id===id);
+if(idx>-1 && idx < cat.items.length-1){
+setTimeout(()=>{
+const nextId=cat.items[idx+1].id;
+document.getElementById('card-'+nextId)?.scrollIntoView({behavior:'smooth',block:'center'});
+},400);
+}
+if(cat.items.every(x=> (state.progress[x.id]||0)>=x.repeat)){
+setTimeout(()=> showToast('ما شاء الله! أتممت '+cat.title+' 🌿'),800);
+}
+}
+updateHomeStats();
+}
+
+function toggleFav(id){
+if(state.favorites.includes(id)){
+state.favorites=state.favorites.filter(x=>x!==id);
+showToast('تمت الإزالة من المفضلة');
+}else{
+state.favorites.push(id);
+showToast('تمت الإضافة للمفضلة ❤️');
+}
+saveState();
+renderHome();
+if(state.currentView==='azkar') renderAzkar(state.currentCategory);
+if(state.currentView==='favorites') renderFavorites();
+}
+
+function saveFeatured(){
+const id='quran-1';
+if(!state.favorites.includes(id)){state.favorites.push(id);saveState();showToast('تم حفظ دعاء اليوم');} else showToast('محفوظ مسبقاً');
+renderHome();
+}
+
+function renderFavorites(){
+const list=document.getElementById('favoritesList');
+const empty=document.getElementById('favEmpty');
+document.getElementById('favCountBadge').textContent=state.favorites.length+' ذكر';
+if(state.favorites.length===0){list.innerHTML=''; empty.classList.remove('hidden'); return}
+empty.classList.add('hidden');
+list.innerHTML='';
+state.favorites.forEach(fid=>{
+const item=getAllAzkar().find(x=>x.id===fid);
+if(!item) return;
+list.innerHTML+=`
+<div class="bg-white dark:bg-[#132e2b] rounded-[20px] p-4 card-shadow border border-zinc-100 dark:border-white/5">
+<div class="flex items-center gap-2 text-[11px] text-zinc-500 mb-2"><span class="bg-zinc-100 dark:bg-white/10 px-2 py-1 rounded-full">${item.category}</span><span class="mr-auto">${item.source}</span>
+<button onclick="toggleFav('${item.id}')" class="w-7 h-7 rounded-full bg-rose-500 text-white flex items-center justify-center"><i class="fa-solid fa-heart text-xs"></i></button>
+</div>
+<p class="amiri text-[16px] leading-7">${item.text}</p>
+<div class="flex gap-2 mt-3">
+<button onclick="switchView('azkar','${Object.keys(azkarDB).find(k=> azkarDB[k].items.some(x=>x.id===item.id))}')" class="flex-1 h-9 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold">عرض القسم</button>
+<button onclick="doTasbih('${item.id}')" class="h-9 px-4 rounded-full bg-primary/10 text-primary text-xs font-bold">تسبيح</button>
+</div>
+</div>`;
+});
+}
+
+function renderTasbih(){
+document.getElementById('tasbihCountDisplay').textContent=state.tasbihCount;
+document.getElementById('tasbihTargetDisplay').textContent=state.tasbihTarget;
+document.getElementById('tasbihPhraseDisplay').textContent=state.tasbihPhrase;
+document.getElementById('tasbihTotalToday').textContent=state.tasbihTotal % 1000;
+document.getElementById('tasbihTotalAll').textContent=state.tasbihTotal;
+document.getElementById('tasbihKhatma').textContent=Math.floor(state.tasbihTotal / state.tasbihTarget);
+const pct = state.tasbihTarget>0 ? Math.min(1, state.tasbihCount / state.tasbihTarget) : 0;
+const circ=641;
+document.getElementById('tasbihRing').style.strokeDashoffset = circ - (circ*pct);
+document.querySelectorAll('.tasbihTargetBtn').forEach(b=>{
+const t=parseInt(b.dataset.target);
+if(t===state.tasbihTarget){b.className='tasbihTargetBtn h-9 px-5 rounded-full bg-white text-[#0a4a44] font-bold text-sm shadow'}
+else{b.className='tasbihTargetBtn h-9 px-5 rounded-full bg-white/15 text-white border border-white/20 font-bold text-sm'}
+});
+// chips
+const chips=document.getElementById('phraseChips');
+chips.innerHTML='';
+phrases.forEach(p=>{
+const active=p===state.tasbihPhrase;
+chips.innerHTML+=`<button onclick="setPhrase('${p}')" class="shrink-0 h-8 px-4 rounded-full text-xs font-bold border ${active?'bg-white text-[#0a4a44] border-white':'bg-white/15 text-white border-white/20'}">${p}</button>`;
+});
+}
+
+function setPhrase(p){state.tasbihPhrase=p; saveState(); renderTasbih(); showToast(p)}
+
+function updateHomeStats(){
+document.getElementById('statFav').textContent=state.favorites.length;
+}
+
+// Events
+document.getElementById('tasbihButton').addEventListener('click',()=>{
+state.tasbihCount++;
+state.tasbihTotal++;
+if(state.tasbihCount >= state.tasbihTarget){
+if(navigator.vibrate) navigator.vibrate([50,50,80]);
+showToast('ختمة مكتملة! ما شاء الله 🎉');
+state.tasbihCount=0;
+}else{
+if(navigator.vibrate) navigator.vibrate(25);
+if(state.tasbihCount % 33===0 && state.tasbihCount!==0) showToast(state.tasbihCount+' تسبيحة');
+}
+saveState(); renderTasbih();
+const btn=document.getElementById('tasbihButton');
+btn.style.transform='scale(0.96)';
+setTimeout(()=>btn.style.transform='scale(1)',120);
+});
+document.getElementById('tasbihReset').addEventListener('click',()=>{
+state.tasbihCount=0; saveState(); renderTasbih(); showToast('تم التصفير');
+});
+document.querySelectorAll('.tasbihTargetBtn').forEach(b=> b.addEventListener('click',()=>{
+state.tasbihTarget=parseInt(b.dataset.target); state.tasbihCount=0; saveState(); renderTasbih(); showToast('الهدف '+state.tasbihTarget);
+}));
+document.getElementById('setCustomTarget').addEventListener('click',()=>{
+const v=parseInt(document.getElementById('customTarget').value);
+if(v>0 && v<=10000){state.tasbihTarget=v; state.tasbihCount=0; saveState(); renderTasbih(); showToast('تم تعيين '+v)}
+});
+
+document.getElementById('themeToggle').addEventListener('click',()=>{
+state.dark=!state.dark; saveState(); applyTheme();
+});
+document.getElementById('darkModeToggle').addEventListener('change',(e)=>{
+state.dark=e.target.checked; saveState(); applyTheme();
+});
+document.getElementById('fontSizeRange').addEventListener('input',(e)=>{
+state.fontSize=parseInt(e.target.value); document.body.style.fontSize=state.fontSize+'px'; document.getElementById('fontSizeVal').textContent=state.fontSize+'px'; saveState();
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+if(confirm('هل أنت متأكد من إعادة ضبط جميع البيانات؟')){
+localStorage.clear(); state.favorites=[]; state.progress={}; state.tasbihCount=0; state.tasbihTotal=0; showToast('تمت إعادة الضبط'); renderHome(); renderFavorites(); renderTasbih();
+}
+});
+document.getElementById('testNotif').addEventListener('click',()=>{
+if('Notification' in window){
+Notification.requestPermission().then(p=>{
+if(p==='granted'){ new Notification('أذكار المسلم',{body:'حان وقت أذكار الصباح 🌅',icon:''}); showToast('تم إرسال الإشعار');}
+else showToast('يرجى السماح بالإشعارات من المتصفح');
+});
+}else showToast('المتصفح لا يدعم الإشعارات - ستعمل في APK');
+});
+
+// search
+const searchInput=document.getElementById('searchInput');
+const searchWrap=document.getElementById('searchBarWrap');
+document.getElementById('searchBtnTop').addEventListener('click',()=>{
+searchWrap.classList.toggle('hidden');
+if(!searchWrap.classList.contains('hidden')) searchInput.focus();
+});
+document.getElementById('clearSearch').addEventListener('click',()=>{
+searchInput.value=''; hideSearch(); searchInput.focus();
+});
+searchInput.addEventListener('input',()=>{
+const q=searchInput.value.trim();
+document.getElementById('clearSearch').classList.toggle('hidden', !q);
+if(q.length===0){hideSearch(); return}
+doSearch(q);
+});
+function doSearch(q){
+const results=getAllAzkar().filter(a=> a.text.includes(q) || a.source.includes(q) || a.category.includes(q));
+document.querySelectorAll('main > section').forEach(s=>s.classList.add('hidden'));
+document.getElementById('view-search').classList.remove('hidden');
+const cont=document.getElementById('searchResults');
+document.getElementById('searchMeta')?.classList.remove('hidden');
+if(results.length===0){
+cont.innerHTML=`<div class="text-center py-12"><div class="w-16 h-16 mx-auto rounded-full bg-zinc-100 dark:bg-white/5 flex items-center justify-center text-zinc-400"><i class="fa-solid fa-magnifying-glass"></i></div><p class="font-bold mt-3">لا توجد نتائج</p><p class="text-sm text-zinc-500">جرب كلمة أخرى مثل "اللهم" أو "سبحان"</p></div>`;
+}else{
+cont.innerHTML=`<p class="text-xs text-zinc-500 mb-2">${results.length} نتيجة لـ "${q}"</p>` + results.map(r=>`
+<div class="bg-white dark:bg-[#132e2b] rounded-2xl p-4 border border-zinc-100 dark:border-white/5">
+<div class="flex items-center gap-2 text-[11px] text-primary font-bold"><span>${r.category}</span> <span class="mr-auto text-zinc-400">${r.source}</span></div>
+<p class="amiri text-[15px] leading-7 mt-2 line-clamp-3">${highlight(r.text,q)}</p>
+<div class="flex gap-2 mt-3">
+<button onclick="switchView('azkar','${Object.keys(azkarDB).find(k=> azkarDB[k].items.some(x=>x.id===r.id))}')" class="flex-1 h-8 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold">فتح القسم</button>
+<button onclick="toggleFav('${r.id}')" class="h-8 w-8 rounded-full ${state.favorites.includes(r.id)?'bg-rose-500 text-white':'bg-zinc-100 dark:bg-white/10'} flex items-center justify-center"><i class="${state.favorites.includes(r.id)?'fa-solid':'fa-regular'} fa-heart text-xs"></i></button>
+</div>
+</div>`).join('');
+}
+}
+function highlight(text,q){
+return text.replace(new RegExp(q,'g'), `<mark class="bg-amber-200 dark:bg-amber-400/40 px-0.5 rounded">${q}</mark>`);
+}
+function hideSearch(){
+document.getElementById('view-search').classList.add('hidden');
+if(state.currentView==='home') document.getElementById('view-home').classList.remove('hidden');
+else document.getElementById('view-'+state.currentView).classList.remove('hidden');
+if(searchInput.value.trim()==='') searchWrap.classList.add('hidden');
+}
+document.querySelectorAll('.navBtn').forEach(b=> b.addEventListener('click',()=> switchView(b.dataset.nav)));
+
+// init
+applyTheme();
+renderHome();
+renderTasbih();
+setInterval(()=>{
+const now=new Date();
+document.getElementById('prayerTime').textContent= now.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'});
+},60000);
+</script>
+</body>
+</html>
