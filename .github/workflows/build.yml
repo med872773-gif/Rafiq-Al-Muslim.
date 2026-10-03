@@ -1,1 +1,64 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build APK with Cordova
+        run: |
+          npm install -g cordova
+          
+          # 1. إنشاء التطبيق من البداية بالاسم الصحيح
+          cordova create myapp com.muslim.app "رفيق المسلم"
+          cd myapp
+          
+          # 2. نقل ملفات موقعك/تطبيقك إلى مجلد www
+          rm -rf www/*
+          cp -r ../* www/ 2>/dev/null || true
+          rm -rf www/myapp www/.github
+
+          # 3. نسخ صورة الأيقونة
+          if [ -f "../icon.png" ]; then
+            cp ../icon.png www/icon.png
+            sed -i '/<\/widget>/i \    <icon src="www/icon.png" />' config.xml
+          fi
+
+          # 4. إضافة منصة الأندرويد
+          cordova platform add android
+
+          # 5. فرض استبدال الأيقونات لجميع دقات شاشات الأندرويد
+          if [ -f "www/icon.png" ]; then
+            RES_DIR="platforms/android/app/src/main/res"
+            find $RES_DIR -name "ic_launcher*.png" -exec cp www/icon.png {} \;
+            find $RES_DIR -name "ic_launcher*.xml" -delete 2>/dev/null || true
+          fi
+
+          # 6. بناء ملف APK
+          cordova build android --debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Rafiq-Al-Muslim-APK
+          path: myapp/platforms/android/app/build/outputs/apk/debug/app-debug.apk
 
